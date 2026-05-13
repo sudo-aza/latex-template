@@ -1,0 +1,14 @@
+{
+  "created": 1778711371,
+  "id": "202605140629300afd7c8cb1814abb",
+  "request_id": "202605140629300afd7c8cb1814abb",
+  "text": "Because of all the chapters, the chapters in the document just kinda look weird if that's what they are. Every few pages is just completely and it got like a black at the top and that's it. No text or anything. I think those are messed up. Chapters.",
+  "usage": {
+    "completion_tokens": 60,
+    "prompt_tokens": 437,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 497
+  }
+}

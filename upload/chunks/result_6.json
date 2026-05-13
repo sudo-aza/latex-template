@@ -1,0 +1,14 @@
+{
+  "created": 1778711378,
+  "id": "20260514062938cff1aba58989446a",
+  "request_id": "20260514062938cff1aba58989446a",
+  "text": "The lists and so on, they look beautiful. They look great. Thank you.",
+  "usage": {
+    "completion_tokens": 18,
+    "prompt_tokens": 142,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 160
+  }
+}
