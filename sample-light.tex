@@ -1,0 +1,174 @@
+% sample-light.tex — Light theme demonstration of sudodoc.sty
+% Compile: lualatex sample-light.tex (run TWICE for TOC)
+\documentclass[12pt]{article}
+
+\usepackage{sudodoc}
+
+\sudodocsetup{
+  theme=light,
+  title={A Comprehensive Study of\\Distributed Systems},
+  subtitle={Architecture, Consensus, and Fault Tolerance\\in Modern Infrastructure},
+  author={Max Mustermann},
+  institution={Technische Universit\"at Berlin\\Fakult\"at f\"ur Elektrotechnik und Informatik},
+  date={May 2026},
+}
+
+\begin{document}
+
+% ── Title Page (light theme) ──
+\maketitlepage
+
+% ── Table of Contents ──
+\maketoc
+
+% ══════════════════════════════════════════════════════════
+% CHAPTER 1
+% ══════════════════════════════════════════════════════════
+\chapterpage{1}{Foundations of Distributed Systems}
+
+\section{Introduction}
+Distributed systems form the backbone of modern computing infrastructure.
+From cloud services to social networks, the ability to coordinate multiple
+autonomous machines is fundamental to scalability and reliability.
+
+\subsection{Motivation and Goals}
+The primary motivation for studying distributed systems lies in their
+ubiquity. Every time you use a web application, stream a video, or check
+your email, you are interacting with a distributed system.
+
+\subsubsection{Why Distributed?}
+Centralized systems, while simpler to reason about, face inherent
+limitations in scale, fault tolerance, and geographic distribution.
+A single point of failure can bring down an entire service.
+
+\subsection{Key Concepts}
+The following concepts are essential for understanding distributed systems:
+
+\begin{description}
+  \item[Consensus] Agreement among distributed nodes on a single
+    data value or system state, despite failures and network delays.
+  \item[Quorum] The minimum number of nodes required to agree before
+    an operation is considered successful, typically a majority.
+  \item[Partition Tolerance] The ability of a system to continue
+    operating despite network partitions that isolate subsets of nodes.
+\end{description}
+
+% ══════════════════════════════════════════════════════════
+% CHAPTER 2
+% ══════════════════════════════════════════════════════════
+\chapterpage{2}{Consensus Algorithms}
+
+\section{Algorithm Comparison}
+Various consensus algorithms offer different trade-offs between
+safety guarantees, fault tolerance, and implementation complexity.
+
+\vspace{4pt}
+\begin{table}[h]
+\centering
+\caption{Comparison of Consensus Algorithms}
+\begin{tabular}{@{} l c c c @{}}
+\toprule
+\rowcolorhead
+\textcolor{tableHeadText}{\textbf{Algorithm}} &
+\textcolor{tableHeadText}{\textbf{Consensus}} &
+\textcolor{tableHeadText}{\textbf{Tolerance}} &
+\textcolor{tableHeadText}{\textbf{Complexity}} \\
+\midrule
+Paxos        & Safety    & $f < n/2$       & Moderate \\
+\rowcoloralt
+Raft         & Safety    & $f < n/2$       & Low      \\
+Viewstamped  & Safety    & $f < n/2$       & Moderate \\
+\rowcoloralt
+PBFT         & Safety    & $f < n/3$       & High     \\
+Zab          & Total     & $f < n/2$       & Moderate \\
+\rowcoloralt
+Tendermint   & Total     & $f < n/3$       & Moderate \\
+HotStuff     & Total     & $f < n/3$       & Low      \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Raft Protocol}
+Raft was designed as an understandable alternative to Paxos, decomposing
+the consensus problem into independent subproblems: leader election,
+log replication, and safety.
+
+\subsection{Leader Election Process}
+The leader election follows a clear sequence of steps:
+
+\begin{enumerate}
+  \item Follower does not receive heartbeat within election timeout
+  \item Follower increments its term and becomes a candidate
+    \begin{enumerate}
+      \item Candidate votes for itself
+      \item Candidate sends RequestVote RPCs to all peers
+    \end{enumerate}
+  \item Candidate waits for votes from majority of nodes
+  \item If majority grants votes, candidate becomes leader
+  \item Leader sends periodic heartbeats to maintain authority
+\end{enumerate}
+
+\subsection{Log Replication}
+Once a leader is established, clients send commands to the leader, which
+appends them to its log and replicates them across followers using
+AppendEntries RPCs.
+
+\begin{itemize}
+  \item Leader appends command to its local log
+    \begin{itemize}
+      \item Each entry stores command and term number
+      \item Entry index monotonically increases
+    \end{itemize}
+  \item Leader sends AppendEntries to all followers
+  \item Followers append entry if log is consistent
+  \item Leader commits once majority acknowledges
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════
+% CHAPTER 3
+% ══════════════════════════════════════════════════════════
+\chapterpage{3}{Implementation Details}
+
+\section{Code Example}
+A minimal Raft-style consensus node implementation in Python:
+
+\begin{lstlisting}[language=Python, caption={Raft node skeleton}]
+class RaftNode:
+    def __init__(self, node_id: int, peers: list):
+        self.id = node_id
+        self.peers = peers
+        self.state = "follower"
+        self.term = 0
+        self.log = []
+        self.voted_for = None
+
+    def request_vote(self, candidate_term: int):
+        """Handle incoming RequestVote RPC."""
+        if candidate_term > self.term:
+            self.term = candidate_term
+            self.voted_for = None
+            self.state = "follower"
+        return self._grant_vote(candidate_term)
+\end{lstlisting}
+
+\section{Key Insight}
+\begin{blockquote}
+A distributed system is one in which the failure of a computer you
+didn't even know existed can render your own computer unusable.
+--- Leslie Lamport
+\end{blockquote}
+
+\vspace{6pt}
+
+This fundamental observation underscores the importance of fault
+tolerance as a first-class design concern in distributed systems.
+
+\begin{lstlisting}[language={}, caption={Minimal configuration}]
+[cluster]
+node_id = "node-1"
+bind_addr = "0.0.0.0:7946"
+election_timeout = "1.5s"
+heartbeat_timeout = "500ms"
+\end{lstlisting}
+
+\end{document}
