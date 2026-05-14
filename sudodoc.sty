@@ -1,6 +1,6 @@
 % sudodoc.sty — Clean, modern LaTeX document template
 % Compile: lualatex (run TWICE for TOC + overlays)
-\ProvidesPackage{sudodoc}[2026/05/13 v1.0.0 sudo-aza template]
+\ProvidesPackage{sudodoc}[2026/05/14 v1.1.0 sudo-aza template]
 
 % ── Packages ──
 \RequirePackage{fontspec}
@@ -128,26 +128,40 @@
 
 % ── Chapter page ──
 \newcommand{\chapterpage}[2]{%
-  \clearpage\thispagestyle{empty}%
-  \begin{tikzpicture}[remember picture, overlay]
-    \fill[titleDark] (current page.north west) rectangle (current page.south east);
-    \node[anchor=south east, font=\fontsize{160}{160}\selectfont\bfseries,
-          text=white, opacity=0.06]
-      at ([xshift=-20pt, yshift=20pt]current page.south east) {#1};
-    \draw[titleRule, line width=0.4pt]
-      ([xshift=40pt, yshift=-0.42\paperheight]current page.north west)
-      -- ([xshift=-40pt, yshift=-0.42\paperheight]current page.north east);
-    \node[anchor=south west, text width=0.7\paperwidth]
-      at ([xshift=0.14\paperwidth, yshift=0.06\paperheight]current page.center)
-      {{\fontsize{11}{13}\selectfont\color{titleMid}%
-        CHAPTER\hspace{8pt}\fontsize{13}{15}\selectfont\color{titleLight}#1}};
-    \node[anchor=north west, text width=0.7\paperwidth, align=flush left]
-      at ([xshift=0.14\paperwidth, yshift=0.08\paperheight]current page.center)
-      {{\fontsize{28}{34}\selectfont\bfseries\color{white}#2}};
-    \draw[titleRule, line width=1.2pt]
-      ([xshift=0.14\paperwidth, yshift=0.005\paperheight]current page.center)
-      -- ([xshift=0.55\paperwidth, yshift=0.005\paperheight]current page.center);
-  \end{tikzpicture}\clearpage}
+  \clearpage
+  \newgeometry{paper=a4paper, top=0pt, bottom=0pt, left=0pt, right=0pt, headheight=0pt}%
+  \thispagestyle{empty}%
+  \noindent
+  \begin{tikzpicture}
+    \useasboundingbox (0,0) rectangle (\paperwidth, \paperheight);
+    % Dark header band — top 40% of page
+    \fill[titleDark]
+      (0, 0.60\paperheight) rectangle (\paperwidth, \paperheight);
+    % Left accent stripe
+    \fill[titleRule]
+      (0, 0.60\paperheight) rectangle (5pt, \paperheight);
+    % Thin accent line at bottom of dark area
+    \fill[titleAccent]
+      (0, 0.5975\paperheight) rectangle (\paperwidth, 0.6025\paperheight);
+    % Large chapter number — subtle watermark in dark area
+    \node[anchor=east, font=\fontsize{140}{140}\selectfont\bfseries,
+          text=white, opacity=0.07]
+      at ([xshift=-15pt, yshift=0.80\paperheight]current bounding box.south) {#1};
+    % "CHAPTER N" label
+    \node[anchor=north west]
+      at (40pt, 0.88\paperheight)
+      {\fontsize{13}{15}\selectfont\color{titleMid}%
+        CHAPTER\hspace{8pt}{\fontsize{18}{20}\selectfont\bfseries\color{titleLight}#1}};
+    % Chapter title
+    \node[anchor=north west, text width=0.72\paperwidth]
+      at (40pt, 0.80\paperheight)
+      {\fontsize{30}{36}\selectfont\bfseries\color{white}#2};
+    % Decorative rule under title
+    \draw[titleAccent, line width=2pt]
+      (40pt, 0.645\paperheight) -- (0.42\paperwidth, 0.645\paperheight);
+  \end{tikzpicture}%
+  \clearpage
+  \restoregeometry}
 
 % ── Title page ──
 \newcommand{\maketitlepage}{%
