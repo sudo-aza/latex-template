@@ -1,10 +1,10 @@
-This is LuaHBTeX, Version 1.24.0 (TeX Live 2026)  (format=lualatex 2026.5.14)  14 MAY 2026 01:10
+This is LuaHBTeX, Version 1.24.0 (TeX Live 2026)  (format=lualatex 2026.5.14)  14 MAY 2026 07:13
  restricted system commands enabled.
-**sample.tex
+**sample-light.tex
 
 ! Emergency stop.
-<*> sample.tex
-              
+<*> sample-light.tex
+                    
 *** (job aborted, file error in nonstop mode)
 
 
