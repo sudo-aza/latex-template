@@ -1,6 +1,6 @@
 % sudodoc.sty — Clean, modern LaTeX document template
 % Compile: lualatex (run TWICE for TOC + overlays)
-\ProvidesPackage{sudodoc}[2026/05/14 v1.1.0 sudo-aza template]
+\ProvidesPackage{sudodoc}[2026/05/14 v1.2.0 sudo-aza template]
 
 % ── Packages ──
 \RequirePackage{fontspec}
@@ -97,30 +97,26 @@
 \titlespacing{\subsubsection}{0pt}{12pt plus 2pt minus 1pt}{6pt}
 
 % ── TOC ──
-\renewcommand{\contentsname}{\vspace*{-10pt}%
-  {\fontsize{24}{28}\selectfont\bfseries\color{titleDark}Contents}}
+% Styled dotted leader (overridden globally for consistent TOC look)
+\renewcommand{\dotfill}{%
+  \leavevmode\cleaders\hbox to 1.2em{\hss.\hss}\hfill\kern0pt}
+
 \titlecontents{section}[0pt]
   {\addvspace{14pt}\fontsize{12}{14}\selectfont\bfseries\color{titleDark}}
   {\thecontentslabel\hspace{10pt}}{}
-  {\hspace{1em}\tikz[baseline=-0.5ex]{
-     \draw[titleRule!40, line width=0.5pt] (0,0) -- (3cm,0);
-     \node[anchor=west, font=\fontsize{10}{12}\selectfont\color{titleMid}]
-       at (3.2cm,0) {\thecontentspage};}}
+  {\hspace{0.8em}{\color{titleMid}\dotfill}\hspace{0.5em}%
+   {\fontsize{10}{12}\selectfont\color{titleMid}\thecontentspage}}
   \addvspace{4pt}
 \titlecontents{subsection}[16pt]
   {\addvspace{6pt}\fontsize{11}{13}\selectfont\color{titleAccent}}
   {\thecontentslabel\hspace{8pt}}{}
-  {\hspace{1em}\tikz[baseline=-0.5ex]{
-     \draw[titleMid!40, line width=0.4pt] (0,0) -- (2.5cm,0);
-     \node[anchor=west, font=\fontsize{10}{12}\selectfont\color{titleMid}]
-       at (2.7cm,0) {\thecontentspage};}}
+  {\hspace{0.8em}{\color{titleMid}\dotfill}\hspace{0.5em}%
+   {\fontsize{10}{12}\selectfont\color{titleMid}\thecontentspage}}
   \addvspace{2pt}
 \titlecontents{subsubsection}[32pt]
   {\addvspace{3pt}\fontsize{10}{12}\selectfont\color{titleMid}}{}{}
-  {\hspace{1em}\tikz[baseline=-0.5ex]{
-     \draw[titleMid!25, line width=0.3pt] (0,0) -- (2cm,0);
-     \node[anchor=west, font=\fontsize{9}{11}\selectfont\color{titleMid}]
-       at (2.2cm,0) {\thecontentspage};}}
+  {\hspace{0.8em}{\color{titleMid!50}\dotfill}\hspace{0.5em}%
+   {\fontsize{9}{11}\selectfont\color{titleMid}\thecontentspage}}
 
 % ── Captions ──
 \captionsetup{tableposition=top, font=small, labelfont=bf, labelsep=period, skip=8pt, belowskip=6pt}
@@ -196,11 +192,17 @@
 
 % ── TOC page ──
 \newcommand{\maketoc}{%
+  \clearpage
+  \newgeometry{paper=a4paper, top=25mm, bottom=25mm, left=30mm, right=25mm, headheight=0pt}%
   \thispagestyle{empty}%
-  \begin{tikzpicture}[remember picture, overlay]
-    \fill[titleDark] (current page.north west) rectangle ([yshift=-6pt]current page.north east);
-    \fill[titleRule] ([xshift=50pt]current page.north west) rectangle ([xshift=54pt]current page.south west);
-  \end{tikzpicture}\vspace{18pt}\hspace{22pt}\tableofcontents\clearpage}
+  \vspace{-5mm}%
+  {\fontsize{24}{28}\selectfont\bfseries\color{titleDark}Contents}\\[6pt]%
+  {\color{titleRule}\rule{0.30\textwidth}{1.2pt}}\\[14pt]%
+  \setlength{\parskip}{0pt}%
+  \renewcommand{\contentsname}{}%
+  \tableofcontents%
+  \clearpage
+  \restoregeometry}
 
 % ── Headers / Footers ──
 \pagestyle{fancy}\fancyhf{}
