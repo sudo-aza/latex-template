@@ -1,23 +1,25 @@
 ---
 Task ID: 1
-Agent: sudo-aza (cron run 2026-05-14 00:00)
-Task: analytics-1 — Build progress analytics scripts
+Agent: sudo-aza (cron run 2026-05-14 09:00)
+Task: latex-6 — Fix chapter opener pages
 
 Work Log:
-- VM was reset; re-cloned workspace and todo-list repos
-- TeXLive not needed (matplotlib-only task)
-- Created scripts/analytics/run_analytics.py — full analytics pipeline
-- Parses git log --numstat for per-commit line change data across both repos
-- Parses journal markdown files to extract tasks completed per maintenance run
-- Parses todo.md for current pending/done status
-- Fixed f-string bug (leaked "if runs else 0" into output)
-- Improved journal task counting: handles lowercase task headers (latex-1:), bracket tags, and excludes meta-sections
-- Generated 5 plots: repo-growth, commit-activity, todo-status, tasks-per-run, lines-changed
-- Generated summary.txt with key metrics
-- Committed to workspace repo (6e183f6) and pushed
-- Marked analytics-1 done in todo.md, committed (e6d1de7) and pushed
+- VM was reset; re-cloned workspace, todo-list, latex-template repos
+- Installed TeXLive (added tikzfill, colortbl, multirow to install script)
+- Compiled sample.tex (2 passes), generated PNGs
+- VLM review confirmed bug: chapter pages "almost entirely blank" — only dark rectangle visible, no text
+- Root cause: `remember picture, overlay` TikZ approach unreliable in LuaLaTeX TeXLive 2026
+- Rewrote `\chapterpage` in sudodoc.sty using `\newgeometry` + regular tikzpicture
+- New design: top 40% dark band with left accent stripe, watermark number, CHAPTER label, title, decorative rule
+- All elements use absolute coordinates within `\useasboundingbox` — no `remember picture` needed
+- Recompiled, VLM scored 8/10 on all 3 chapter pages — text clearly visible
+- Content pages unaffected, no regressions
+- Bumped version to v1.1.0, pushed latex-template repo
+- Updated install script with missing packages, pushed workspace repo
+- Marked latex-6 done, cleaned up todo formatting, pushed todo-list repo
 
 Stage Summary:
-- Key metrics: 19 commits, 1,558 total LOC, 37.5% task completion (9/24), avg 1 task per run
-- Next pending task: tts-research (TTS engine research for German multi-speaker on CPU)
-- All plots saved to scripts/analytics/output/ and sent to Discord
+- Key fix: replaced `remember picture, overlay` with `newgeometry` + regular tikzpicture
+- sudodoc.sty v1.0.0 → v1.1.0
+- VLM: 8/10 on all chapter pages (was "blank" before)
+- Next pending task: latex-7 (Fix table of contents width)
