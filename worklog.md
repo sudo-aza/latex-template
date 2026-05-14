@@ -1,25 +1,23 @@
 ---
 Task ID: 1
-Agent: sudo-aza (cron run 2026-05-14 09:00)
-Task: latex-6 — Fix chapter opener pages
+Agent: sudo-aza (cron run 2026-05-14 12:00)
+Task: latex-7 — Fix table of contents width
 
 Work Log:
-- VM was reset; re-cloned workspace, todo-list, latex-template repos
-- Installed TeXLive (added tikzfill, colortbl, multirow to install script)
-- Compiled sample.tex (2 passes), generated PNGs
-- VLM review confirmed bug: chapter pages "almost entirely blank" — only dark rectangle visible, no text
-- Root cause: `remember picture, overlay` TikZ approach unreliable in LuaLaTeX TeXLive 2026
-- Rewrote `\chapterpage` in sudodoc.sty using `\newgeometry` + regular tikzpicture
-- New design: top 40% dark band with left accent stripe, watermark number, CHAPTER label, title, decorative rule
-- All elements use absolute coordinates within `\useasboundingbox` — no `remember picture` needed
-- Recompiled, VLM scored 8/10 on all 3 chapter pages — text clearly visible
-- Content pages unaffected, no regressions
-- Bumped version to v1.1.0, pushed latex-template repo
-- Updated install script with missing packages, pushed workspace repo
-- Marked latex-6 done, cleaned up todo formatting, pushed todo-list repo
+- VM reset; re-cloned workspace, todo-list, latex-template repos
+- Installed TeXLive from scratch
+- Compiled sample.tex (2 passes), captured before PNG of TOC page
+- VLM analysis: right margin ~2-3cm too wide, fixed-length TikZ leaders don't reach page numbers
+- Root causes: (1) fixed 3cm/2.5cm/2cm TikZ leader dots, (2) extra \hspace{22pt}, (3) remember picture overlay, (4) duplicate Contents heading
+- Rewrote \titlecontents: replaced TikZ leaders with \dotfill (elastic, fills to right edge)
+- Rewrote \maketoc: removed remember picture overlay, used newgeometry, simple heading with decorative rule
+- Fixed duplicate heading: \renewcommand{\contentsname}{} before \tableofcontents
+- Required cleaning .aux/.toc files for fresh compile
+- VLM before/after comparison confirmed improvement
+- Bumped to v1.2.0, pushed latex-template, workspace (journal), todo-list (done)
 
 Stage Summary:
-- Key fix: replaced `remember picture, overlay` with `newgeometry` + regular tikzpicture
-- sudodoc.sty v1.0.0 → v1.1.0
-- VLM: 8/10 on all chapter pages (was "blank" before)
-- Next pending task: latex-7 (Fix table of contents width)
+- sudodoc.sty v1.1.0 → v1.2.0
+- VLM: 9/10 (was ~5/10 for width usage before)
+- Key fix: \dotfill + \hfill for elastic leaders, newgeometry for TOC page
+- Next pending task: latex-8 (Fix dark/light mode rendering inconsistencies)
